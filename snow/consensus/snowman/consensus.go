@@ -29,6 +29,10 @@ type Consensus interface {
 	) error
 
 	// Returns the number of blocks processing
+	// An instance is finalized if there are no processing blocks
+	// (all decisions have been finalized, NumProcessing == 0).
+	// Note that, it is possible that after returning, a new decision may be added such
+	// that this instance is no longer finalized.
 	NumProcessing() int
 
 	// Adds a new decision. Assumes the dependency has already been added.
@@ -55,9 +59,4 @@ type Consensus interface {
 	// RecordPoll collects the results of a network poll. Assumes all decisions
 	// have been previously added. Returns if a critical error has occurred.
 	RecordPoll(context.Context, bag.Bag[ids.ID]) error
-
-	// Finalized returns true if all decisions that have been added have been
-	// finalized. Note, it is possible that after returning finalized, a new
-	// decision may be added such that this instance is no longer finalized.
-	Finalized() bool
 }
